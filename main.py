@@ -1,24 +1,24 @@
-from Variable_Sort import VariableSort
+import xml_file
+import image
 
 def main():
-    VariableSorter = VariableSort()
-    while True:
-        UserInput = input("Enter a Variable (or 'stop'):")
-        if UserInput.lower() == 'stop':
-            break
-        try: # check if integer
-            if UserInput.isdigit():
-                VariableSorter.add_variables(int(UserInput))
-            elif UserInput.replace('.','',1).isdigit() and UserInput.count('.') < 2:
-                VariableSorter.add_variables(float(UserInput)) #check if float 
-            else:
-                VariableSorter.add_variables(UserInput)
-        except (ValueError, TypeError) as e:
-            print(e)
+    """Cleans the data, get the information, and adds the information to the images
+    """
+    original_xml = 'text_files/employee_data.xml' #define paths 
+    cleaned_xml = 'text_files/cleaned_employee_data.xml'
+    images_folder = 'images/'
+    output_folder = 'images/output_files'
+    font_path = 'fonts/Syne_regular.otf'
 
-    print("Strings:", VariableSorter.get_strings()) #prints string integer and float
-    print("Integers:", VariableSorter.get_integers())
-    print("Floats:", VariableSorter.get_floats())
+    cleaned_data = xml_file.clean_xml(original_xml) # clean and save XML
+    xml_file.save_cleaned_xml(cleaned_data, cleaned_xml)
+
+    employees = xml_file.employee_information(cleaned_xml)
+    for emp in employees:
+        name_title = f"{emp['name']} - {emp['title']}" #create text for image
+        original_image_path = f"{images_folder}{emp['profile_pic']}"
+        output_image_path = f"{output_folder}{emp['profile_pic']}"
+        image.add_text(original_image_path, output_image_path, name_title, font_path, position=(10,10))
 
 if __name__ == "__main__":
     main()
